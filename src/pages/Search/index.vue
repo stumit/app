@@ -62,7 +62,8 @@
               </li>
             </ul>
           </div>
-          <Pagination/>
+          <!-- 向Pagination组件中传递数据：pageNo(默认展示那一页) pageSize(一页展示多少数据) total(一共有数据) continues(展示页码的个数)-->
+          <Pagination :pageNo="3" :pageSize="10" :total="91" :continues="5"/>
         </div>
       </div>
     </div>
