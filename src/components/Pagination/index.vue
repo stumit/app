@@ -1,22 +1,22 @@
 <template>
   <div class="pagination">
-    <button>上一页</button>
-    <button>1</button>
-    <button>2</button>
-    <button>3</button>
-    <button>4</button>
-    <button>5</button>
-    <button>···</button>
-    <button>{{totalPage}}</button>
-    <button>下一页</button>
+    <!-- 分页 -->
+    <button :disabled="pageNo==1" @click="$emit('getPageNo',pageNo-1)">上一页</button>
+    <button v-show="StartAndEnd.start > 1" @click="$emit('getPageNo',1)">1</button>
+    <button v-show="StartAndEnd.start > 2">···</button>
+
+    <button v-for="(page, index) in StartAndEnd.end" :key="index" v-show="page >= StartAndEnd.start" @click="$emit('getPageNo',page)">{{page}}</button>
+
+    <button v-show="StartAndEnd.end<totalPage-1">···</button>
+    <button v-show="StartAndEnd.end<totalPage" @click="$emit('getPageNo',totalPage)">{{totalPage}}</button>
+    <button :disabled="pageNo==totalPage" @click="$emit('getPageNo',pageNo+1)">下一页</button>
     
     <button style="margin-left: 30px">共 {{$props.total}} 条</button>
-    <h3>{{start}}--{{end}}---{{$props.pageNo}}</h3>
   </div>
 </template>
 
 <script lang="ts">
-  import { computed, defineComponent, ref, toRefs } from 'vue';
+  import { computed, defineComponent, toRefs } from 'vue';
   // import type { PropType } from 'vue';
   export default defineComponent({
     name: "PaginaTion",
@@ -27,39 +27,52 @@
     //   continues:Number 
     //   },
     props:["pageNo","pageSize","total","continues"],
+    emits:["getPageNo"],
     setup(props) {
       const {pageNo,pageSize,total,continues} = toRefs(props)
-      // 先定义两个开始和结束的数字
-      let start = ref(0);
-      let end = ref(0); 
+      
+      
       // 使用计算属性计算出总共有多少页
       const totalPage = computed(() =>{
         // 向上取整
         return Math.ceil(total.value / pageSize.value);
       });
-      // 判断展示页码的个数如果大于总页数
-      if (continues.value > totalPage.value) {
-        start.value = 1;
-        end.value = totalPage.value;
-      }else{
-        start.value = pageNo.value - Math.floor(continues.value / 2);
-        end.value = pageNo.value + Math.floor(continues.value / 2);
-        if (start.value < 1) {
-          start.value = 1;
-          end.value = continues.value;
+      // 使用计算属性计算出开始和结束
+      const StartAndEnd = computed(() =>{
+        // 先定义两个开始和结束的数字
+        let start = 0;
+        let end = 0; 
+        // 判断展示页码的个数如果大于总页数
+        if (continues.value > totalPage.value) {
+          start = 1;
+          end = totalPage.value;
+        }else{
+          start = pageNo.value - Math.floor(continues.value / 2);
+
+          end = pageNo.value + Math.floor(continues.value / 2);
+
+          if (start < 1) {
+            start = 1;
+            end = continues.value;
+          }
+          if (end > totalPage.value) {
+            start = totalPage.value - continues.value + 1;
+            end = totalPage.value;
+          }
         }
-        if (end.value > totalPage.value) {
-          start.value = totalPage.value - continues.value + 1;
-          end.value = totalPage.value;
+        return{
+          start,
+          end
         }
-      }
-      // console.log(totalPage.value);
-      console.log(`${start.value}--${end.value}`)
+      });
+      
+      console.log(Math.floor(continues.value / 2));
+      // console.log(`${start.value}--${end.value}`)
       // const totals = ref(props.total.value);
+
       return{
         totalPage,
-        start,
-        end
+        StartAndEnd
       }
     }
   })

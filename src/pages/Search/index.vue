@@ -63,7 +63,7 @@
             </ul>
           </div>
           <!-- 向Pagination组件中传递数据：pageNo(默认展示那一页) pageSize(一页展示多少数据) total(一共有数据) continues(展示页码的个数)-->
-          <Pagination :pageNo="3" :pageSize="10" :total="91" :continues="5"/>
+          <Pagination :pageNo="searchParams.pageNo" :pageSize="searchParams.pageSize" :total="total" :continues="5" @getPageNo="getPageNo"/>
         </div>
       </div>
     </div>
@@ -147,6 +147,10 @@
       const isDesc = computed(() => {
         return (searchParams.order as string).indexOf('desc') != -1;
       })
+      // 通过计算属性获取vuex中的searchList中total(总数居)
+      const total = computed(() => {
+        return store.state.search.searchList.total
+      })
       // 监听路由信息是否发生改变，如发生改变，再次发送请求
       watch(route,() =>{
         // 在发送请求之前还需更新searchParams中的数据
@@ -186,7 +190,7 @@
           router.push({name:"search",query:route.query})
         }
       }
-      // 收集 trademark 自定义事件的回调
+      // 通过 trademark 自定义事件的回调，获取子组件传来的数据
       const trademarkInfo = (trademark: { tmId: string; tmName: string; }) =>{
         // 给searchParams.trademark赋值
         searchParams.trademark = `${trademark.tmId}:${trademark.tmName}`;
@@ -200,7 +204,7 @@
         // 重新发送请求
         getData();
       }
-      // 收集 props 自定义事件的回调
+      // 收集 props 自定义事件的回调，获取从子组件返回来的数据
       const attrInfo = (attrs: { attrId: string; attrName: string; },attrValue: string) => {
         
         // 获取从子组件返回来的数据
@@ -221,6 +225,7 @@
         // 发送请求
         getData()
       }
+      // 鼠标点击排序事件的方法
       const changeOrder = (flag:string) =>{
         const originOrder = searchParams.order as string;
         // 通过split分别获取，起始searchParams.order中的数据
@@ -239,6 +244,11 @@
         // 重新发送请求
         getData();
       }
+
+      const getPageNo = (pageNo: number) =>{
+        searchParams.pageNo = pageNo;
+        getData()
+      }
       return{
         goodsList,
         searchParams,
@@ -252,7 +262,9 @@
         isTow,
         isAsc,
         isDesc,
-        changeOrder
+        changeOrder,
+        total,
+        getPageNo,
       }
     }
 
