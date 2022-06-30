@@ -21,6 +21,7 @@ import { createStore } from "vuex";
 // 引入小仓库（就是将vuex模块化，让不同组件数据存放在不同的模块中）
 import home from './home';
 import search from './search';
+import detail from './detail'
 export default createStore({
   // state,
   // getters,
@@ -30,6 +31,7 @@ export default createStore({
   // 实现vuex模块化开发存储数据
   modules:{
     home,
-    search
+    search,
+    detail
   }
 });

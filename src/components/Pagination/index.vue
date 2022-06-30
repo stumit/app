@@ -2,13 +2,13 @@
   <div class="pagination">
     <!-- 分页 -->
     <button :disabled="pageNo==1" @click="$emit('getPageNo',pageNo-1)">上一页</button>
-    <button v-show="StartAndEnd.start > 1" @click="$emit('getPageNo',1)">1</button>
+    <button v-show="StartAndEnd.start > 1" @click="$emit('getPageNo',1)" :class="{active:pageNo == 1 }">1</button>
     <button v-show="StartAndEnd.start > 2">···</button>
 
-    <button v-for="(page, index) in StartAndEnd.end" :key="index" v-show="page >= StartAndEnd.start" @click="$emit('getPageNo',page)">{{page}}</button>
+    <button v-for="(page, index) in StartAndEnd.end" :key="index" v-show="page >= StartAndEnd.start" @click="$emit('getPageNo',page)" :class="{active:pageNo == page }" >{{page}}</button>
 
     <button v-show="StartAndEnd.end<totalPage-1">···</button>
-    <button v-show="StartAndEnd.end<totalPage" @click="$emit('getPageNo',totalPage)">{{totalPage}}</button>
+    <button v-show="StartAndEnd.end<totalPage" @click="$emit('getPageNo',totalPage)" :class="{active:pageNo == totalPage }">{{totalPage}}</button>
     <button :disabled="pageNo==totalPage" @click="$emit('getPageNo',pageNo+1)">下一页</button>
     
     <button style="margin-left: 30px">共 {{$props.total}} 条</button>
@@ -110,5 +110,8 @@
         color: #fff;
       }
     }
+  }
+  .active{
+    background-color: skyblue;
   }
 </style>

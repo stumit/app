@@ -35,3 +35,10 @@ export const reqFloorList = () => mockRequest({url:'/floor',method:'get'})
 }
 */ 
 export const reqGetSearchInfo = (params:object) => request({url:'/list',method:'post',data:params})
+
+/*
+  获取商品详情页面数据
+  接口：/api/item/{ skuId }
+  请求方式：get
+*/ 
+export const reqGoodsInfo = (skuId:string) => request({url:`/item/${skuId}`,method:'get'})
