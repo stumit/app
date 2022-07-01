@@ -1,18 +1,71 @@
 <template>
   <div class="spec-preview">
-    <img src="../images/s1.png" />
-    <div class="event"></div>
+    <img :src="imgObj.imgUrl" />
+    <div class="event" @mousemove="handler"></div>
     <div class="big">
-      <img src="../images/s1.png" />
+      <img :src="imgObj.imgUrl" ref="big"/>
     </div>
-    <div class="mask"></div>
+    <!-- 绿色的蒙版 -->
+    <div class="mask" ref="mask"></div>
   </div>
 </template>
 
 <script lang="ts">
-  import {defineComponent} from 'vue';
+  import {computed, defineComponent,onMounted, ref} from 'vue';
+  import bus from '@/libs/bus';
   export default defineComponent({
     name: "sphZoom",
+    props:['skuImageList'],
+    setup(props){
+      const currentIndex =ref(0);
+      const mask = ref< HTMLElement | null>(null) 
+      const big = ref< HTMLElement | null>(null) 
+      const imgObj = computed(() =>{
+        return props.skuImageList[currentIndex.value] || {}
+      });
+      onMounted(() => {
+        // 获取兄弟组件的数据
+        bus.$on('getIndex',(index:number) => {
+          // console.log(index);
+          currentIndex.value = index
+        })
+      });
+      const handler = (e:MouseEvent) =>{
+        if (mask.value && big.value) {
+          // 获取鼠标位置
+          let left = e.offsetX - mask.value.offsetWidth/2;
+          let top = e.offsetY - mask.value.offsetHeight/2;
+          // 判断鼠标鼠标，不能超过边界
+          if(left<= 0){
+            left = 0
+          }
+          if(left>=mask.value.offsetWidth){
+            left = mask.value.offsetWidth
+          }
+          if(top<= 0){
+            top = 0
+          }
+          if(top>=mask.value.offsetHeight){
+            top = mask.value.offsetHeight
+          }
+
+          //设置绿色蒙版的位置 
+          mask.value.style.left = left+'px';
+          mask.value.style.top = top +'px';
+          // 设置放大图片的位置
+          big.value.style.left = -2 * left+'px';
+          big.value.style.top = -2 * top+'px';
+        } 
+        
+      }
+      return{
+        imgObj,
+        currentIndex,
+        handler,
+        mask,
+        big
+      }
+    }
   })
 </script>
 

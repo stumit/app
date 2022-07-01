@@ -17,6 +17,15 @@ const actions = {
   },
 };
 const getters = {
+  categoryView(state: { goodsList: { categoryView: object; }; }){
+    return state.goodsList.categoryView || {}
+  },
+  skuInfo(state: { goodsList: { skuInfo: object; }; }){
+    return state.goodsList.skuInfo || {}
+  },
+  spuSaleAttrList(state: { goodsList: { spuSaleAttrList: Array<object>; }; }){
+    return state.goodsList.spuSaleAttrList || []
+  },
 };
 
 export default{

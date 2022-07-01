@@ -1,8 +1,8 @@
 <template>
-  <div class="swiper-container">
+  <div class="swiper">
     <div class="swiper-wrapper">
-      <div class="swiper-slide">
-        <img src="../images/s1.png">
+      <div class="swiper-slide" v-for="(item,index) in skuImageList" :key="item.id">
+        <img :src="item.imgUrl" :class="{active:currentIndex == index}" @click="changeCurrentIndex(index)">
       </div>
     </div>
     <div class="swiper-button-next"></div>
@@ -11,15 +11,51 @@
 </template>
 
 <script lang="ts">
-  import {defineComponent} from 'vue';
-  import Swiper from 'swiper';
+  import {defineComponent, nextTick, ref, watch} from 'vue';
+  import Swiper, {Navigation} from "swiper";
+  import bus from '@/libs/bus';
   export default defineComponent({
     name: "ImageList",
+    props:["skuImageList"],
+    setup(props){
+      const currentIndex = ref(0)
+      // 通过监视属性,监视bannerList
+      watch(props,() =>{
+          nextTick(()=>{
+              new Swiper(".swiper", {
+                // 使用各个模块
+                modules:[Navigation],
+
+                slidesPerView : 3,
+                slidesPerGroup : 1,
+                // 前进后退按钮
+                navigation: {
+                  nextEl: ".swiper-button-next",
+                  prevEl: ".swiper-button-prev",
+
+                  hideOnClick: true,
+                },
+              })
+          })
+        },{immediate:true}
+      );
+      // 点击事件的回调函数
+      const changeCurrentIndex =(index:number) => {
+        currentIndex.value = index;
+         // 通知兄弟组件
+         bus.$emit('getIndex',currentIndex.value)
+      };
+     
+      return{
+        currentIndex,
+        changeCurrentIndex
+      }
+    }
   })
 </script>
 
 <style lang="less" scoped>
-  .swiper-container {
+  .swiper {
     height: 56px;
     width: 412px;
     box-sizing: border-box;
@@ -39,11 +75,6 @@
         display: block;
 
         &.active {
-          border: 2px solid #f60;
-          padding: 1px;
-        }
-
-        &:hover {
           border: 2px solid #f60;
           padding: 1px;
         }

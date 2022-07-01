@@ -7,31 +7,30 @@
     <section class="con">
       <!-- 导航路径区域 -->
       <div class="conPoin">
-        <span>手机、数码、通讯</span>
-        <span>手机</span>
-        <span>Apple苹果</span>
-        <span>iphone 6S系类</span>
+        <span v-show="categoryView.category1Id">{{categoryView.category1Name}}</span>
+        <span v-show="categoryView.category2Id">{{categoryView.category2Name}}</span>
+        <span v-show="categoryView.category3Id">{{categoryView.category3Name}}</span>
       </div>
       <!-- 主要内容区域 -->
       <div class="mainCon">
         <!-- 左侧放大镜区域 -->
         <div class="previewWrap">
           <!--放大镜效果-->
-          <Zoom />
+          <Zoom :skuImageList = "skuImageList" />
           <!-- 小图列表 -->
-          <ImageList />
+          <ImageList :skuImageList = "skuImageList"/>
         </div>
         <!-- 右侧选择区域布局 -->
         <div class="InfoWrap">
           <div class="goodsDetail">
-            <h3 class="InfoName">Apple iPhone 6s（A1700）64G玫瑰金色 移动通信电信4G手机</h3>
-            <p class="news">推荐选择下方[移动优惠购],手机套餐齐搞定,不用换号,每月还有花费返</p>
+            <h3 class="InfoName">{{skuInfo.skuName}}</h3>
+            <p class="news">{{skuInfo.skuDesc}}</p>
             <div class="priceArea">
               <div class="priceArea1">
                 <div class="title">价&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;格</div>
                 <div class="price">
                   <i>¥</i>
-                  <em>5299</em>
+                  <em>{{skuInfo.price}}</em>
                   <span>降价通知</span>
                 </div>
                 <div class="remark">
@@ -60,40 +59,19 @@
               </div>
             </div>
           </div>
-
           <div class="choose">
             <div class="chooseArea">
               <div class="choosed"></div>
-              <dl>
-                <dt class="title">选择颜色</dt>
-                <dd changepirce="0" class="active">金色</dd>
-                <dd changepirce="40">银色</dd>
-                <dd changepirce="90">黑色</dd>
-              </dl>
-              <dl>
-                <dt class="title">内存容量</dt>
-                <dd changepirce="0" class="active">16G</dd>
-                <dd changepirce="300">64G</dd>
-                <dd changepirce="900">128G</dd>
-                <dd changepirce="1300">256G</dd>
-              </dl>
-              <dl>
-                <dt class="title">选择版本</dt>
-                <dd changepirce="0" class="active">公开版</dd>
-                <dd changepirce="-1000">移动版</dd>
-              </dl>
-              <dl>
-                <dt class="title">购买方式</dt>
-                <dd changepirce="0" class="active">官方标配</dd>
-                <dd changepirce="-240">优惠移动版</dd>
-                <dd changepirce="-390">电信优惠版</dd>
+              <dl v-for="(spuSaleAttr) in spuSaleAttrList" :key="spuSaleAttr.id">
+                <dt class="title">{{spuSaleAttr.saleAttrName}}</dt>
+                <dd changepirce="0" @click="changeAttr(ValueList,spuSaleAttr.spuSaleAttrValueList)" :class="{active:ValueList.isChecked == 1}" v-for="(ValueList) in spuSaleAttr.spuSaleAttrValueList" :key="ValueList.id">{{ValueList.saleAttrValueName}}</dd>
               </dl>
             </div>
             <div class="cartWrap">
               <div class="controls">
-                <input autocomplete="off" class="itxt">
-                <a href="javascript:" class="plus">+</a>
-                <a href="javascript:" class="mins">-</a>
+                <input autocomplete="off" class="itxt" v-model="skuNum">
+                <a href="javascript:" class="plus" @click="skuNum++">+</a>
+                <a href="javascript:" class="mins" @click="skuNum > 1 ? skuNum-- : skuNum=1">-</a>
               </div>
               <div class="add">
                 <a href="javascript:">加入购物车</a>
@@ -347,7 +325,7 @@
 </template>
 
 <script lang="ts">
-  import {computed, defineComponent, onMounted} from 'vue';
+  import {computed, defineComponent, onMounted, ref} from 'vue';
   import {useStore} from 'vuex';
   import {useRoute} from 'vue-router';
   import ImageList from './ImageList/ImageList.vue';
@@ -362,14 +340,38 @@
     setup(){
       const store = useStore();
       const route = useRoute();
+      const skuNum = ref(1)
       onMounted(() => {
         store.dispatch("getGoodsInfo",route.params.skuId)
       });
-      const goodsInfo = computed(() => {
-        return store.state.detail.goodsList
-      })
+      const categoryView = computed(() => {
+        return store.getters.categoryView
+      });
+      const skuInfo = computed(() => {
+        return store.getters.skuInfo
+      });
+      const spuSaleAttrList = computed(() => {
+        return store.getters.spuSaleAttrList
+      });
+      const skuImageList = computed(() => {
+        return store.getters.skuInfo.skuImageList || [];
+      });
+      // 点击产品的回调函数，将当saleAttrValue前点击的数据和arr整个数组都传递过来
+      const changeAttr = (saleAttrValue:any,arr:any)=>{
+        // 遍历整个数组，将数组中所有isChecked属性设置为0，为没有高亮
+        arr.forEach((item: { isChecked: number; }) => {
+          item.isChecked = 0
+        });
+        // 然后再将点击的那个isChecked设置为1为有高亮
+        saleAttrValue.isChecked = 1;
+      }
       return{
-        goodsInfo,
+        categoryView,
+        skuInfo,
+        spuSaleAttrList,
+        skuImageList,
+        changeAttr,
+        skuNum
       }
     }
   })
