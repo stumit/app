@@ -69,12 +69,13 @@
             </div>
             <div class="cartWrap">
               <div class="controls">
-                <input autocomplete="off" class="itxt" v-model="skuNum">
+                <input autocomplete="off" class="itxt" v-model ="skuNum" @change="changeSkuNum">
                 <a href="javascript:" class="plus" @click="skuNum++">+</a>
                 <a href="javascript:" class="mins" @click="skuNum > 1 ? skuNum-- : skuNum=1">-</a>
               </div>
               <div class="add">
-                <a href="javascript:">加入购物车</a>
+                <!-- 先将数据保存到服务器中，后路由跳转 -->
+                <a @click="addShopCar">加入购物车</a>
               </div>
             </div>
           </div>
@@ -327,7 +328,7 @@
 <script lang="ts">
   import {computed, defineComponent, onMounted, ref} from 'vue';
   import {useStore} from 'vuex';
-  import {useRoute} from 'vue-router';
+  import {useRoute,useRouter} from 'vue-router';
   import ImageList from './ImageList/ImageList.vue';
   import Zoom from './Zoom/Zoom.vue';
 
@@ -340,6 +341,7 @@
     setup(){
       const store = useStore();
       const route = useRoute();
+      const router = useRouter()
       const skuNum = ref(1)
       onMounted(() => {
         store.dispatch("getGoodsInfo",route.params.skuId)
@@ -350,14 +352,16 @@
       const skuInfo = computed(() => {
         return store.getters.skuInfo
       });
+      
       const spuSaleAttrList = computed(() => {
         return store.getters.spuSaleAttrList
       });
       const skuImageList = computed(() => {
         return store.getters.skuInfo.skuImageList || [];
       });
-      // 点击产品的回调函数，将当saleAttrValue前点击的数据和arr整个数组都传递过来
+      // 点击产品类型的回调函数，将当saleAttrValue前点击的数据和arr整个数组都传递过来
       const changeAttr = (saleAttrValue:any,arr:any)=>{
+        // 排他操作实现点击的元素高亮
         // 遍历整个数组，将数组中所有isChecked属性设置为0，为没有高亮
         arr.forEach((item: { isChecked: number; }) => {
           item.isChecked = 0
@@ -365,13 +369,39 @@
         // 然后再将点击的那个isChecked设置为1为有高亮
         saleAttrValue.isChecked = 1;
       }
+      
+      const changeSkuNum = () => {
+        const val = skuNum.value
+         if (isNaN(val*1) || val<1) {
+            skuNum.value = 1
+         }else{
+          skuNum.value = Math.floor(val);
+         }
+      }
+      // 加入购物车的回调函数
+      const addShopCar = async () => {
+      try {
+        // 成功
+        await store.dispatch("addDataShopCart",{skuId:route.params.skuId,skuNum:skuNum.value});
+        // 将数据存储到sessionStorage(会话存储，关闭页面就会清除)中
+        sessionStorage.setItem('SkuInfo',JSON.stringify(skuInfo.value))
+        // 路由跳转
+        router.push({name:'addcartsuccess',query:{skuNum:skuNum.value}})
+      } catch (error:any) {
+        // 失败
+        console.log(error.message);
+      }
+      
+      }
       return{
         categoryView,
         skuInfo,
         spuSaleAttrList,
         skuImageList,
         changeAttr,
-        skuNum
+        skuNum,
+        changeSkuNum,
+        addShopCar
       }
     }
   })

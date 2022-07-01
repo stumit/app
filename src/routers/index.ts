@@ -6,6 +6,8 @@ import Search from '@/pages/Search/index.vue';
 import Login from '@/pages//Login/index.vue';
 import Register from '@/pages/Register/index.vue';
 import Detail from '@/pages/Detail/index.vue';
+import AddCartSuccess from '@/pages/AddCartSuccess/index.vue'
+import ShopCart from '@/pages/ShopCart/index.vue'
  
 const routes = [
     // router参数详细看下文
@@ -51,7 +53,23 @@ const routes = [
         meta:{
               show:true
           }
-      },
+    },
+    {
+        path: "/addcartsuccess", 
+        name: "addcartsuccess",
+        component: AddCartSuccess,
+        meta:{
+              show:true
+          }
+    },
+    {
+        path: "/shopcar", 
+        name: "shopcar",
+        component: ShopCart,
+        meta:{
+              show:true
+          }
+    },
     // 重定向，在项目跑起来的时候，访问/，立马让他定向到首页
     {
         path: "/", 

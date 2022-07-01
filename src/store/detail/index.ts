@@ -1,4 +1,4 @@
-import {reqGoodsInfo} from '@/api'
+import {reqGoodsInfo,reqAddShopCart} from '@/api'
 const state = {
   goodsList:{}
 };
@@ -15,6 +15,14 @@ const actions = {
       context.commit("GetGoodsList",result.data)
     }
   },
+  async addDataShopCart(context: any,com:{skuId:string,skuNum:string}){
+    const result = await reqAddShopCart(com.skuId,com.skuNum)
+    if (result.code == 200) {
+      return "ok"
+    }else{
+      return Promise.reject(new Error('failed'))
+    }
+  }
 };
 const getters = {
   categoryView(state: { goodsList: { categoryView: object; }; }){
