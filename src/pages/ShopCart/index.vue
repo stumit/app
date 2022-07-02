@@ -111,11 +111,15 @@ import {mapGetters, useStore} from 'vuex';
       const updateChecked = async(cart: any,event: any) => {
         // console.log(cart);
         // console.log(event.target.checked);
+        // 成功
         try {
           const checked = event.target.checked ? "1" : "0";
+          // 通知vuex发送请求
           await store.dispatch("updateCheckedById",{skuId:cart.skuId,skuNum:checked});
+          // 重新获取数据
           getCartList()
-        } catch (error:any) {
+        } catch (error:any) { //失败
+          // 展示失败的信息
           console.log(error.message);
           
         }
