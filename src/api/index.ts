@@ -70,3 +70,11 @@ export const reqDelCartListById = (skuId:number) => request({url:`/cart/deleteCa
   请求方式：get
 */ 
 export const reqUpdateCheckedById = (skuID:string,isChecked:string) => request({url:`/cart/checkCart/${skuID}/${isChecked}`,method:'get'})
+
+
+/*
+  获取验证码
+  接口：/api/user/passport/sendCode/{phone}
+  请求方式：get
+*/ 
+export const raqGetCode = (phone:string) => request({url:`/user/passport/sendCode/${phone}`,method:'get'})

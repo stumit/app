@@ -34,7 +34,34 @@ const actions = {
       return Promise.reject(new Error("failed"))
     }
   },
+  // 删除选中的全部产品
+  delAllCheckedCart({dispatch,getters}:any){
+    // console.log(getters.cartList.cartInfoList);
+    const promiseAll: any[] = [];
+    getters.cartList.cartInfoList.forEach((item: { isChecked: number; skuId: number; }) =>{
+      const promise =  item.isChecked == 1 ? dispatch("delCartListById",item.skuId) : '';
+      promiseAll.push(promise)
+    })
+    // console.log(promiseAll);
+    // console.log(Promise.all(promiseAll));
+    return Promise.all(promiseAll)
+    
+    
+  },
+  // 修改全部产品的勾选状态
+  updateAllChecked({dispatch,state}: any,checked: string){
+    
+    // console.log(state.CartList[0].cartInfoList);
+    const promiseAll: any[] = [];
+    state.CartList[0].cartInfoList.forEach((item: { skuId: string; }) => {
+      const promise = dispatch("updateCheckedById",{skuId:item.skuId,skuNum:checked})
+      promiseAll.push(promise);
+    });
+    // console.log(Promise.all(promiseAll));
+    
+    return Promise.all(promiseAll)
 
+  }
 };
 // 项目中getters主要作用就是简化仓库当中的数据
 const getters = {

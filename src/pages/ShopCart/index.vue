@@ -40,11 +40,11 @@
     </div>
     <div class="cart-tool">
       <div class="select-all">
-        <input class="chooseAll" type="checkbox" :checked="isAllCheck">
+        <input class="chooseAll" type="checkbox" @change="updateAllChecked" :checked="isAllCheck && cartInfoList.length > 0">
         <span>全选</span>
       </div>
       <div class="option">
-        <a href="#none">删除选中的商品</a>
+        <a @click="deleteAllCheckedCart">删除选中的商品</a>
         <a href="#none">移到我的关注</a>
         <a href="#none">清除下柜商品</a>
       </div>
@@ -65,7 +65,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted} from 'vue';
-import {mapGetters, useStore} from 'vuex';
+import { useStore} from 'vuex';
   export default defineComponent({
     name: 'ShopCart',
     setup(){
@@ -96,7 +96,7 @@ import {mapGetters, useStore} from 'vuex';
         return cartInfoList.value.every((time: { isChecked: number; }) => time.isChecked == 1)
       });
       // 删除某一个产品的数据
-      const deleteCartById = async (cart: any) => {
+      const deleteCartById = async (cart: { skuId: string; }) => {
         try {
           // 如果删除成功则重新发送请求
           await store.dispatch("delCartListById",cart.skuId);
@@ -107,8 +107,18 @@ import {mapGetters, useStore} from 'vuex';
           
         }
       };
+      // 删除勾选的所有产品的数据
+      const deleteAllCheckedCart = async () => {
+        try {
+          await store.dispatch("delAllCheckedCart");
+          getCartList()
+        } catch (error:any) {
+          console.log(error.message);
+        }
+        
+      }
       // 修改某一个产品的勾选状态
-      const updateChecked = async(cart: any,event: any) => {
+      const updateChecked = async(cart: { skuId: string; },event: any) => {
         // console.log(cart);
         // console.log(event.target.checked);
         // 成功
@@ -121,17 +131,28 @@ import {mapGetters, useStore} from 'vuex';
         } catch (error:any) { //失败
           // 展示失败的信息
           console.log(error.message);
-          
+        }
+      };
+      // 修改某全部产品的勾选状态
+      const updateAllChecked = async(event:Event) => {
+        try {
+          const checked = (event.target as HTMLInputElement).checked ? "1" : "0";
+          await store.dispatch("updateAllChecked",checked);
+          getCartList();
+        } catch (error:any) {
+          console.log(error.message);
         }
         
-      };
+      } 
       return{
         cartList,
         cartInfoList,
         totalPrice,
         isAllCheck,
         deleteCartById,
-        updateChecked
+        deleteAllCheckedCart,
+        updateChecked,
+        updateAllChecked
       };
     }
   })
