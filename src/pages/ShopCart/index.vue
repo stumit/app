@@ -125,9 +125,19 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue'
+import { defineComponent, onMounted} from 'vue';
+import {useStore} from 'vuex';
   export default defineComponent({
     name: 'ShopCart',
+    setup(){
+      const store = useStore();
+      const getCartList = () => {
+        store.dispatch("getCartList")
+      };
+      onMounted(() => {
+        getCartList()
+      })
+    }
   })
 </script>
 

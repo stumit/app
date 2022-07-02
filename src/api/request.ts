@@ -21,6 +21,11 @@ const request = axios.create({
 
 // 请求拦截器:在请求之前做一些事
 request.interceptors.request.use((config) => {
+
+  if(localStorage.getItem("UUIDTOKEN")){
+    // 请求头添加一个字段（userTempId）和后台商量好
+    (config.headers)!.userTempId = (localStorage.getItem("UUIDTOKEN") as string)
+  }
   // 进度条开始移动
   nprogress.start();
   // config:配置对象，其中有一个属性很重要，headers请求头

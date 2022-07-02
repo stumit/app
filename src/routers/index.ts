@@ -17,7 +17,7 @@ const routes = [
         name: "home",
         // 配置使用引入路由组件
         component: Home,
-        // 是否显示三级联动
+        // 是否显示footer组件
         meta:{
             show:true
         }

@@ -49,3 +49,10 @@ export const reqGoodsInfo = (skuId:string) => request({url:`/item/${skuId}`,meth
   请求方式：post
 */ 
 export const reqAddShopCart = (skuId:string,skuNum:string) => request({url:`/cart/addToCart/${skuId}/${skuNum}`,method:'post'})
+
+/*
+  购物车详情列表
+  接口：/api/cart/cartList
+  请求方式：get
+*/ 
+export const reqCartList = () => request({url:'/cart/cartList',method:'get'})

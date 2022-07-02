@@ -14,7 +14,7 @@ const actions = {
       //将获取到的传递到 mutations中
       context.commit("GetSearchList",result.data)
     }
-  },
+  }
 };
 // 项目中getters主要作用就是简化仓库当中的数据
 const getters = {

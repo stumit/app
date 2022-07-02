@@ -1,6 +1,9 @@
 import {reqGoodsInfo,reqAddShopCart} from '@/api'
+import {getUUID} from '@/utils/uuid_token'
 const state = {
-  goodsList:{}
+  goodsList:{},
+  // 临时身份
+  uuid_token:getUUID()
 };
 const mutations = {
   GetGoodsList(state: { goodsList: object; },goodsList: object){
