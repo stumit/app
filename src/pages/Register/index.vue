@@ -14,26 +14,26 @@
       <div class="content">
         <label>验证码:</label>
         <input type="text" placeholder="请输入验证码" v-model="code">
-        <button >获取验证码</button>
+        <button @click="getCode">获取验证码</button>
         <span class="error-msg">错误提示信息</span>
       </div>
       <div class="content">
         <label>登录密码:</label>
-        <input type="text" placeholder="请输入你的登录密码">
+        <input type="password" placeholder="请输入你的登录密码" v-model="password">
         <span class="error-msg">错误提示信息</span>
       </div>
       <div class="content">
         <label>确认密码:</label>
-        <input type="text" placeholder="请输入确认密码">
+        <input type="password" placeholder="请输入确认密码" v-model="ConfirmPassword ">
         <span class="error-msg">错误提示信息</span>
       </div>
       <div class="controls">
-        <input name="m1" type="checkbox">
+        <input name="m1" type="checkbox" :checked="agree">
         <span>同意协议并注册《尚品汇用户协议》</span>
         <span class="error-msg">错误提示信息</span>
       </div>
       <div class="btn">
-        <button>完成注册</button>
+        <button @click="userRegister">完成注册</button>
       </div>
     </div>
 
@@ -57,15 +57,57 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, ref} from 'vue'
+  import {defineComponent, ref, watch} from 'vue';
+  import {useStore} from 'vuex';
+  import {useRouter} from 'vue-router';
   export default defineComponent({
     name: 'sphRegister',
     setup(){
+      const store = useStore();
+      const router = useRouter();
+      // 手机号
       const phone = ref('');
+      // 验证码
       const code = ref('');
+      // 密码
+      const password = ref('');
+      // 确认密码
+      const ConfirmPassword = ref('');
+      // 是否勾选
+      const agree = ref(true);
+      // 获取验证码
+      const getCode = () => {
+        try {
+        store.dispatch('getCode',phone.value);
+        watch(store.state,() => {
+          code.value = store.state.user.code;
+        })
+        } catch (error:any) {
+          console.log(error.message);
+        }
+      };
+      // 
+      const userRegister = async() => {
+        try {
+          if (phone.value && code.value && password.value == ConfirmPassword.value) {
+            const ph = phone.value;
+            const cd = code.value;
+            const pd = password.value;
+            store.dispatch("userRegister",{ph,cd,pd})
+            router.push('/login');
+          }
+        } catch (error:any) {
+          console.log(error.message);
+        }
+      }
       return{
         phone,
-        code
+        code,
+        password,
+        ConfirmPassword,
+        agree,
+        getCode,
+        userRegister
       }
     }
   })

@@ -77,4 +77,11 @@ export const reqUpdateCheckedById = (skuID:string,isChecked:string) => request({
   接口：/api/user/passport/sendCode/{phone}
   请求方式：get
 */ 
-export const raqGetCode = (phone:string) => request({url:`/user/passport/sendCode/${phone}`,method:'get'})
+export const reqGetCode = (phone:string) => request({url:`/user/passport/sendCode/${phone}`,method:'get'})
+
+/*
+  注册用户
+  接口：/api/user/passport/register
+  请求方式：post
+*/ 
+export const reqUserRegister = (data:object) => request({url:`/user/passport/register`,data,method:'post'})
