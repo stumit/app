@@ -5,12 +5,17 @@
       <div class="container">
         <div class="loginList">
           <p>尚品汇欢迎您！</p>
-          <p>
+          <p v-show="!userName">
             <span>请</span>
             <!-- 声明式导航 -->
             <router-link to="/login">登录</router-link>
             <!-- 声明式导航 -->
             <router-link class="register" to="/register">免费注册</router-link>
+          </p>
+          <p v-show="userName">
+            <span>{{userName}}</span>
+            <!-- 声明式导航 -->
+            <a class="register" @click="loginOut">退出登录</a>
           </p>
         </div>
         <div class="typeList">
@@ -45,9 +50,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue';
+import { computed, defineComponent, onMounted, ref } from 'vue';
 // 引入useRouter：一般进行编程式导航进行路由跳转
 import {useRouter} from 'vue-router';
+import {useStore} from 'vuex'
 /*
   vue 3.x 移除了 $on 、 $off 和 $once 这几个事件 API ，
   应用实例不再实现事件触发接口
@@ -58,6 +64,7 @@ export default defineComponent({
   name: 'sphHeader',
   setup(){
     const router = useRouter();
+    const store = useStore();
     let keyWord = ref('');
     // 定义一个接口,规定以后添加的数据类型
     interface LooseObject {
@@ -98,9 +105,26 @@ export default defineComponent({
         keyWord.value = "";
       })
     })
+    // 获取用户名
+    const userName = computed(() => {
+      return store.state.user.userInfo.name
+    });
+    // 退出登录
+    const loginOut = async() => {
+      try {
+        await store.dispatch("userLogOut")
+        router.push("/home")
+      } catch (error:any) {
+        console.log(error.message);
+        
+      }
+      
+    }
     return{
       goSearch,
-      keyWord
+      keyWord,
+      userName,
+      loginOut
     }
   }
 

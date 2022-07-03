@@ -14,14 +14,14 @@
           </ul>
 
           <div class="content">
-            <form action="##">
+            <form >
               <div class="input-text clearFix">
                 <span></span>
-                <input type="text" placeholder="邮箱/用户名/手机号">
+                <input type="text" placeholder="邮箱/用户名/手机号" v-model="phones">
               </div>
               <div class="input-text clearFix">
                 <span class="pwd"></span>
-                <input type="text" placeholder="请输入密码">
+                <input type="password" placeholder="请输入密码" v-model="passwords">
               </div>
               <div class="setting clearFix">
                 <label class="checkbox inline">
@@ -30,7 +30,7 @@
                 </label>
                 <span class="forget">忘记密码？</span>
               </div>
-              <button class="btn">登&nbsp;&nbsp;录</button>
+              <button class="btn" @click.prevent="userLogin">登&nbsp;&nbsp;录</button>
             </form>
 
             <div class="call clearFix">
@@ -66,9 +66,39 @@
 </template>
 
 <script lang="ts">
-  import {defineComponent} from 'vue';
+  import {defineComponent, ref} from 'vue';
+  import {useStore} from 'vuex';
+  import {useRouter} from 'vue-router';
   export default defineComponent({
     name: 'sphLogin',
+    setup(){
+      const store = useStore();
+      const router = useRouter()
+      const phones = ref('');
+      const passwords = ref('');
+      // 登录的回调
+      const userLogin = async() => {
+        try {
+          // 登录成功
+          if (phones.value && passwords.value) {
+            const phone = phones.value;
+            const password = passwords.value
+            await store.dispatch('userLogin',{phone,password})
+          }
+          // 跳转到home首页
+          router.push('/home')
+        } catch (error:any) {
+          console.log(error.message);
+          
+        }
+      
+      }
+      return{
+        phones,
+        passwords,
+        userLogin
+      }
+    }
   })
 </script>
 

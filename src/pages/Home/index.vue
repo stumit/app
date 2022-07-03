@@ -14,6 +14,7 @@
 <script lang="ts">
 import {computed, defineComponent, onMounted } from 'vue';
 import {useStore} from 'vuex';
+import {removeToken} from '@/utils/token'
 
 import ListContainer from './ListContainer/index.vue';
 import RecoMmend from './RecoMmend/index.vue';
@@ -37,6 +38,7 @@ export default defineComponent({
       // 当组件加载完毕时,向vuex发送请求
       onMounted(() => {
         store.dispatch("getFloorList");
+        store.dispatch("getUserInfo");
       });
       // 从vuex中获取数据
       const floorList =  computed(() => {
