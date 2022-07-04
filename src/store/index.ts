@@ -23,7 +23,8 @@ import home from './home';
 import search from './search';
 import detail from './detail';
 import shopcart from './shopcart';
-import user from './user'
+import user from './user';
+import tarde from './tarde'
 export default createStore({
   // state,
   // getters,
@@ -36,6 +37,7 @@ export default createStore({
     search,
     detail,
     shopcart,
-    user
+    user,
+    tarde
   }
 });

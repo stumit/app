@@ -56,7 +56,7 @@
           <i class="summoney">{{totalPrice}}</i>
         </div>
         <div class="sumbtn">
-          <a class="sum-btn" @click="goTrade" >结算</a>
+          <routerLink class="sum-btn" to="/trade">结算</routerLink>
         </div>
       </div>
     </div>
@@ -146,9 +146,6 @@ import {useRouter} from 'vue-router';
         }
         
       } 
-      const goTrade = () =>{
-        router.push('/trade')
-      }
       return{
         cartList,
         cartInfoList,
@@ -157,8 +154,7 @@ import {useRouter} from 'vue-router';
         deleteCartById,
         deleteAllCheckedCart,
         updateChecked,
-        updateAllChecked,
-        goTrade
+        updateAllChecked
       };
     }
   })
