@@ -56,7 +56,7 @@
           <i class="summoney">{{totalPrice}}</i>
         </div>
         <div class="sumbtn">
-          <a class="sum-btn" href="###" target="_blank">结算</a>
+          <a class="sum-btn" @click="goTrade" >结算</a>
         </div>
       </div>
     </div>
@@ -66,10 +66,12 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted} from 'vue';
 import { useStore} from 'vuex';
+import {useRouter} from 'vue-router';
   export default defineComponent({
     name: 'ShopCart',
     setup(){
       const store = useStore();
+      const router = useRouter();
       const getCartList = () => {
         store.dispatch("getCartList")
       };
@@ -144,6 +146,9 @@ import { useStore} from 'vuex';
         }
         
       } 
+      const goTrade = () =>{
+        router.push('/trade')
+      }
       return{
         cartList,
         cartInfoList,
@@ -152,7 +157,8 @@ import { useStore} from 'vuex';
         deleteCartById,
         deleteAllCheckedCart,
         updateChecked,
-        updateAllChecked
+        updateAllChecked,
+        goTrade
       };
     }
   })

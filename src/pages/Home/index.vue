@@ -38,7 +38,6 @@ export default defineComponent({
       // 当组件加载完毕时,向vuex发送请求
       onMounted(() => {
         store.dispatch("getFloorList");
-        store.dispatch("getUserInfo");
       });
       // 从vuex中获取数据
       const floorList =  computed(() => {
