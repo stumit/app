@@ -134,3 +134,10 @@ export const reqSubmitOrder = (tradeNo: string,data: object) =>request({url:`/or
   请求方式：get
 */
 export const reqPayInfo = (orderId:string) =>request({url:`/payment/weixin/createNative/${orderId}`,method:'get'})
+
+/*
+   查询支付订单状态
+   接口：/api/payment/weixin/queryPayStatus/{orderId}
+   请求方式：get
+*/ 
+export const reqPayStatus = (orderId:string) =>request({url:`/payment/weixin/queryPayStatus/${orderId}`,method:'get'})

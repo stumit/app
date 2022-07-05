@@ -10,6 +10,7 @@
           <span class="fl">请您在提交订单<em class="orange time">4小时</em>之内完成支付，超时订单会自动取消。订单号：<em>{{orderId}}</em></span>
           <span class="fr"><em class="lead">应付金额：</em><em class="orange money">￥{{payInfo.totalFee}}</em></span>
         </div>
+        
       </div>
       <div class="checkout-info">
         <h4>重要说明：</h4>
@@ -83,17 +84,23 @@
 
 <script lang="ts">
   import {computed, defineComponent, onMounted, ref} from 'vue';
-  import {useRoute} from 'vue-router';
-  import {reqPayInfo} from '@/api';
-  import { ElMessageBox } from 'element-plus'
+  import {useRoute,useRouter} from 'vue-router';
+  import {reqPayInfo,reqPayStatus} from '@/api';
+  import { ElMessageBox } from 'element-plus';
+  import QRCode  from 'qrcode';
+import { LOGICAL_OPERATORS } from '@babel/types';
   export default defineComponent({
     name: 'sphPay',
     setup(){
       const route = useRoute();
+      const router = useRouter();
+      let timer = ref();
+      let code = ref();
+      let inter = ref();
       // 定义一个对象
       let payInfo = ref({
         codeUrl:"",
-        orderId:0,
+        orderId:"",
         resultCode:"",
         totalFee:0
       });
@@ -111,19 +118,69 @@
       onMounted(() => {
         getPayInfo()
       })
-      const open = () => {
+      // 点击支付按钮的回调
+      const open = async() => {
+        timer.value = true;
+        // 通过qrcode生成二维码
+        const url = await QRCode.toDataURL(payInfo.value.codeUrl);
+        // element-ui的MessageBox弹出框
         ElMessageBox.alert(
-          '<strong>proxy is <i>HTML</i> string</strong>',
-          'HTML String',
+          // 展示二维码
+          `<img src=${url} />`,
+          '微信支付',
           {
             dangerouslyUseHTMLString: true,
             center:true,
             showCancelButton:true,
             cancelButtonText:'支付遇到问题',
             confirmButtonText:'已经支付',
-            showClose:false
+            showClose:false,
+            beforeClose:(action, instance, done) => {
+              // console.log(action);
+              // console.log(instance);
+              // console.log(done);
+              // 如果点击 支付遇到问题 按钮
+              if (action =="cancel") {
+                // 弹出信息
+                alert("请联系客服,电话:1234567890");
+                // 修改标识
+                timer.value = false
+                // 清空定时器
+                clearInterval(inter.value);
+                // 关闭消息弹出框
+                done();
+              }else{
+                // if(code.value == 200){
+                   // 修改标识
+                  timer.value = false
+                  // 清空定时器
+                  clearInterval(inter.value);
+                  // 关闭消息弹出框
+                  done();
+                  router.push("/paysuccess")
+                // }
+              }
+            }
           }
-        )
+        );
+        if(timer.value) {
+           inter.value = setInterval( async()=>{
+            const result = await reqPayStatus(payInfo.value.orderId)
+            // 判断请求是否成功
+            if (result.code == 200) {
+              // 清除定时器
+              clearInterval(inter.value);
+              // 修改标识
+              timer.value = false;
+              // 保存code
+              code.value = result.code;
+              // 关闭消息弹出框
+              ElMessageBox.close()
+              // 跳转到下一个页面
+              router.push("/paysuccess")
+            }
+          },1000)
+        }
       }
       return{
         orderId,
