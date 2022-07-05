@@ -82,7 +82,7 @@
       </div>
     </div>
     <div class="sub clearFix">
-      <router-link class="subBtn" to="/pay">提交订单</router-link>
+      <a class="subBtn" @click="submitOrder">提交订单</a>
     </div>
   </div>
 </template>
@@ -90,12 +90,17 @@
 <script lang="ts">
 import {computed, defineComponent,onMounted, ref} from 'vue';
 import {useStore} from 'vuex';
+import {useRouter} from 'vue-router';
+// 不使用vuex发送请求获取数据，直接在组件中发送请求获取数据
+// 引入提交订单的post请求
+import {reqSubmitOrder} from '@/api'
   export default defineComponent({
     name: 'sphTrade',
     setup(){
-      const store = useStore()
-      const msg = ref('')
-       
+      const store = useStore();
+      const router = useRouter()
+      const msg = ref('');
+      let orderId = ref('');
       onMounted(() => {
         store.dispatch("getUserAddress");
         store.dispatch("getOrderInfo");
@@ -123,12 +128,44 @@ import {useStore} from 'vuex';
           user.isDefault = 1
         });
       };
+      // 点击提交订单的回调
+      const submitOrder = async() => {
+        const {tradeNo} = orderInfo.value;
+        const data = {
+          // 收件人的姓名
+          "consignee": userAddress.value.consignee,
+          // 收件人的手机号
+          "consigneeTel": userAddress.value.fullAddress,
+          // 收件人的地址
+          "deliveryAddress": userAddress.value.phoneNum,
+          // 支付方式
+          "paymentWay": "ONLINE",
+          // 留言
+          "orderComment": msg.value ,
+          // 需要带的参数
+          "orderDetailList": orderInfo.value.detailArrayList
+        }
+        const result = await reqSubmitOrder(tradeNo,data);
+        if (result.code == 200) {
+          // 提交成功，保存id
+          orderId.value = result.data;
+          // 后路由跳转，并带上id
+          router.push(`/pay?orderId=${orderId.value}`);
+          console.log(orderId.value);
+          
+        }else{
+          // 提交失败，提示错误信息
+          alert(result.message)
+        }
+        // console.log(result);
+      }
       return{
         userAddress,
         changeDefault,
         userDefaultAddress,
         orderInfo,
-        msg
+        msg,
+        submitOrder
       }
     }
   })

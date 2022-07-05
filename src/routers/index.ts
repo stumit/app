@@ -9,7 +9,8 @@ import Register from '@/pages/Register/index.vue';
 import Detail from '@/pages/Detail/index.vue';
 import AddCartSuccess from '@/pages/AddCartSuccess/index.vue'
 import ShopCart from '@/pages/ShopCart/index.vue';
-import Trade from '@/pages/Trade/index.vue'
+import Trade from '@/pages/Trade/index.vue';
+import Pay from '@/pages/Pay/index.vue'
 //  设置路由路径
 const routes = [
   // router参数详细看下文
@@ -76,6 +77,14 @@ const routes = [
     path: "/trade",
     name: "trade",
     component: Trade,
+    meta: {
+      show: true
+    }
+  },
+  {
+    path: "/pay",
+    name: "pay",
+    component: Pay,
     meta: {
       show: true
     }

@@ -120,3 +120,17 @@ export const reqAddressList = () =>request({url:'/user/userAddress/auth/findUser
   请求方式：get
 */ 
 export const reqOrderInfo = () =>request({url:'/order/auth/trade',method:'get'})
+
+/*
+  提交订单
+  接口：/api/order/auth/submitOrder?tradeNo={tradeNo}
+  请求方式：post
+*/ 
+export const reqSubmitOrder = (tradeNo: string,data: object) =>request({url:`/order/auth/submitOrder?tradeNo=${tradeNo}`,data,method:'post'})
+
+/*
+  获取订单支付信息
+  接口：/api/payment/weixin/createNative/{orderId}
+  请求方式：get
+*/
+export const reqPayInfo = (orderId:string) =>request({url:`/payment/weixin/createNative/${orderId}`,method:'get'})
