@@ -1,4 +1,7 @@
 const { defineConfig } = require('@vue/cli-service')
+const AutoImport = require('unplugin-auto-import/webpack')
+const Components = require('unplugin-vue-components/webpack')
+const { ElementPlusResolver } = require('unplugin-vue-components/resolvers')
 // defineConfig 帮手函数，以获得更好的类型提示
 module.exports = defineConfig({
   /*
@@ -20,4 +23,15 @@ module.exports = defineConfig({
       },
     },
   },
+  // element-plus按需导入
+  configureWebpack: {
+    plugins: [
+      AutoImport({
+        resolvers: [ElementPlusResolver()]
+      }),
+      Components({
+        resolvers: [ElementPlusResolver()]
+      })
+    ]
+  }
 })

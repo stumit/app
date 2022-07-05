@@ -65,7 +65,7 @@
         <div class="hr"></div>
 
         <div class="submit">
-          <a class="btn">立即支付</a>
+          <a class="btn" @click="open">立即支付</a>
         </div>
         <div class="otherpay">
           <div class="step-tit">
@@ -85,19 +85,23 @@
   import {computed, defineComponent, onMounted, ref} from 'vue';
   import {useRoute} from 'vue-router';
   import {reqPayInfo} from '@/api';
+  import { ElMessageBox } from 'element-plus'
   export default defineComponent({
     name: 'sphPay',
     setup(){
       const route = useRoute();
+      // 定义一个对象
       let payInfo = ref({
         codeUrl:"",
         orderId:0,
         resultCode:"",
         totalFee:0
       });
+      // 获取通过路由query传来的参数
       const orderId = computed(() => {
         return route.query.orderId
       });
+      // 获取数据
       const getPayInfo = async() =>{
        const result =  await reqPayInfo(orderId.value as string)
        if(result.code == 200){
@@ -107,10 +111,24 @@
       onMounted(() => {
         getPayInfo()
       })
-      
+      const open = () => {
+        ElMessageBox.alert(
+          '<strong>proxy is <i>HTML</i> string</strong>',
+          'HTML String',
+          {
+            dangerouslyUseHTMLString: true,
+            center:true,
+            showCancelButton:true,
+            cancelButtonText:'支付遇到问题',
+            confirmButtonText:'已经支付',
+            showClose:false
+          }
+        )
+      }
       return{
         orderId,
-        payInfo
+        payInfo,
+        open
       }
     }
   })
