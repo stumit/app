@@ -12,6 +12,10 @@ import ShopCart from '@/pages/ShopCart/index.vue';
 import Trade from '@/pages/Trade/index.vue';
 import Pay from '@/pages/Pay/index.vue';
 import PaySuccess from '@/pages/PaySuccess/index.vue';
+import Center from '@/pages/Center/index.vue';
+// 引入二级路由组件
+import MyOrder from '@/pages/Center/myOrder/index.vue'
+import GroupOrder from '@/pages/Center/groupOrder/index.vue'
 //  设置路由路径
 const routes = [
   // router参数详细看下文
@@ -97,6 +101,30 @@ const routes = [
     meta: {
       show: true
     }
+  },
+  {
+    path: "/center",
+    name: "center",
+    component: Center,
+    meta: {
+      show: true
+    },
+    // 设置二级路由
+    children:[
+      {
+        path:'myorder',
+        component:MyOrder
+      },
+      {
+        path:'grouporder',
+        component:GroupOrder
+      },
+      // 重定向，如果访问/center，则跳转到/center/myorder
+      {
+        path: "/center",
+        redirect: "/center/myorder"
+      },
+    ]
   },
   // 重定向，在项目跑起来的时候，访问/，立马让他定向到首页
   {

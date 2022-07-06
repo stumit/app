@@ -141,3 +141,10 @@ export const reqPayInfo = (orderId:string) =>request({url:`/payment/weixin/creat
    请求方式：get
 */ 
 export const reqPayStatus = (orderId:string) =>request({url:`/payment/weixin/queryPayStatus/${orderId}`,method:'get'})
+
+/*
+  获取个人中心的数据
+  接口：/api/order/auth/{page}/{limit}
+  请求方式：get
+*/ 
+export const reqMyOrder = (page:string,limit:string) =>request({url:`/order/auth/${page}/${limit}`,method:'get'})

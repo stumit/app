@@ -24,7 +24,8 @@ import search from './search';
 import detail from './detail';
 import shopcart from './shopcart';
 import user from './user';
-import tarde from './tarde'
+import tarde from './tarde';
+import order from './order';
 export default createStore({
   // state,
   // getters,
@@ -38,6 +39,7 @@ export default createStore({
     detail,
     shopcart,
     user,
-    tarde
+    tarde,
+    order
   }
 });
