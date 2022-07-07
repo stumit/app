@@ -14,7 +14,6 @@
 <script lang="ts">
 import {computed, defineComponent, onMounted } from 'vue';
 import {useStore} from 'vuex';
-import {removeToken} from '@/utils/token'
 
 import ListContainer from './ListContainer/index.vue';
 import RecoMmend from './RecoMmend/index.vue';
