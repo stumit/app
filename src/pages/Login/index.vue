@@ -68,12 +68,13 @@
 <script lang="ts">
   import {defineComponent, ref} from 'vue';
   import {useStore} from 'vuex';
-  import {useRouter} from 'vue-router';
+  import {useRouter,useRoute} from 'vue-router';
   export default defineComponent({
     name: 'sphLogin',
     setup(){
       const store = useStore();
-      const router = useRouter()
+      const router = useRouter();
+      const route = useRoute();
       const phones = ref('');
       const passwords = ref('');
       // 登录的回调
@@ -85,8 +86,10 @@
             const password = passwords.value
             await store.dispatch('userLogin',{phone,password})
           }
-          // 跳转到home首页
-          router.push('/home')
+          //还需要判断是否路径上是否query参数，有则跳到相应的页面，否则跳转到home首页
+          const toPath = route.query.redirect || '/home'
+          // console.log(route.query.redirect);
+          router.push(toPath as string)
         } catch (error:any) {
           console.log(error.message);
           

@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from 'vue-router';
+import { createRouter, createWebHashHistory, RouteLocationNormalized, NavigationGuardNext } from 'vue-router';
 
 import store from '@/store';
 // 引入路由组件
@@ -84,6 +84,16 @@ const routes = [
     component: Trade,
     meta: {
       show: true
+    },
+    // 路由独享守卫
+    beforeEnter: (to:RouteLocationNormalized, from:RouteLocationNormalized, next:NavigationGuardNext) => {
+      // 如果是从shopcar跳转过来的就通行
+      if (from.path == "/shopcar") {
+        next()
+      } else {
+        // 否则不跳转
+        next(false)
+      }
     }
   },
   {
@@ -92,6 +102,15 @@ const routes = [
     component: Pay,
     meta: {
       show: true
+    },
+     // 路由独享守卫
+     beforeEnter: (to:RouteLocationNormalized, from:RouteLocationNormalized, next:NavigationGuardNext) => {
+      // 如果是从trade跳转过来的就通行
+      if (from.path == "/trade") {
+        next()
+      } else {
+        next(false)
+      }
     }
   },
   {
@@ -151,7 +170,9 @@ router.beforeEach(async (to, from, next) => {
   /*
       to：用来获取要跳转的那个路由的信息
       from：用来获取你从哪个路由而来的信息
-      next：放行函数，
+      next：放行函数，有两种写法：
+      next()：直接放行
+      next("路径")：指定去那个路由组件
   */
   // 获取token    
   const token = (store.state as any).user.token;
@@ -180,8 +201,13 @@ router.beforeEach(async (to, from, next) => {
       }
     }
   } else {
-    // 未登录
-    next()
+    // 未登录,不能去交易相关的页面
+    if(to.path.indexOf("/trade") != -1 || to.path.indexOf("/pay") != -1 || to.path.indexOf("/center") != -1){
+      // 将想要跳转的路由信息设置到地址栏中，以便登录后直接跳转到相关页面
+      next(`/login?redirect=${to.path}`);
+    }else{
+      next()
+    }   
   }
 
 })

@@ -21,6 +21,14 @@
 import {defineComponent} from 'vue'
   export default defineComponent({
     name: 'PaySuccess',
+    // 组件内置守卫
+    beforeRouteEnter(to,from,next){
+      if (from.path == '/pay') {
+        next()
+      } else {
+        next(false)     
+      }
+    },
   })
 </script>
 
