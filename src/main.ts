@@ -14,6 +14,9 @@ import 'swiper/css/bundle';
 import 'swiper/css';
 // 引入自己的配置注册element-ui
 import {globalRegister} from '@/global';
+// 引入lazyLoad，图片懒加载
+import VueLazyLoad from 'vue-lazyload';
+import atm from '@/assets/1.gif';
 
 const app = createApp(App);
 // 使用 vue-router 插件
@@ -23,7 +26,10 @@ app.use(store);
 // 使用自己的配置注册element-ui
 app.use(globalRegister);
 // 设置为全局组件，第一个参数为设置的name值，第二个参数为那个组件
-app.component(TypeNav.name,TypeNav)
+app.component(TypeNav.name,TypeNav);
+app.use(VueLazyLoad,{
+  loading:atm
+})
 // 挂载实例
 app.mount('#app');
 

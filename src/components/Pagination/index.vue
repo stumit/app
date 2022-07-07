@@ -29,14 +29,14 @@
     props:["pageNo","pageSize","total","continues"],
     emits:["getPageNo"],
     setup(props) {
-      const {pageNo,pageSize,total,continues} = toRefs(props)
-      
-      
+      const {pageNo,pageSize,total,continues} = toRefs(props);
       // 使用计算属性计算出总共有多少页
       const totalPage = computed(() =>{
         // 向上取整
         return Math.ceil(total.value / pageSize.value);
       });
+      console.log(totalPage.value);
+      
       // 使用计算属性计算出开始和结束
       const StartAndEnd = computed(() =>{
         // 先定义两个开始和结束的数字
@@ -66,7 +66,7 @@
         }
       });
       
-      console.log(Math.floor(continues.value / 2));
+      // console.log(Math.floor(continues.value / 2));
       // console.log(`${start.value}--${end.value}`)
       // const totals = ref(props.total.value);
 

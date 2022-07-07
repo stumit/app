@@ -18,6 +18,7 @@
     "nprogress": "^0.2.0",
     "swiper": "^8.2.4",
     "vue": "^3.2.13",
+    "vue-lazyload": "^3.0.0-rc.2",
     "vue-router": "^4.0.16",
     "vuex": "^4.0.2"
   },

@@ -2,7 +2,7 @@ import { createRouter, createWebHashHistory, RouteLocationNormalized, Navigation
 
 import store from '@/store';
 // 引入路由组件
-import Home from '@/pages/Home/index.vue';
+// import Home from '@/pages/Home/index.vue';
 import Search from '@/pages/Search/index.vue';
 import Login from '@/pages//Login/index.vue';
 import Register from '@/pages/Register/index.vue';
@@ -23,8 +23,8 @@ const routes = [
     // 配置路径
     path: "/home",
     name: "home",
-    // 配置使用引入路由组件
-    component: Home,
+    // 使用路由懒加载来加载组件(相当于按需引入)，提高性能
+    component: () => import('@/pages/Home/index.vue'),
     // 是否显示footer组件
     meta: {
       show: true
@@ -33,6 +33,7 @@ const routes = [
   {
     path: "/search/:keyword?",
     name: "search",
+    // 直接使用引入的路由组件
     component: Search,
     meta: {
       show: true
